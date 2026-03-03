@@ -20,7 +20,7 @@ class ProductAdapter(
                 tag = ProductHolder(findViewById(android.R.id.text1))
             }
 
-
+        (productView.tag as ProductHolder).productTitleTv.text = productList[position].title
 
         return productView
     }

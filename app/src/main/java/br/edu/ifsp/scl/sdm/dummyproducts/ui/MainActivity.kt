@@ -7,6 +7,7 @@ import br.edu.ifsp.scl.sdm.dummyproducts.R
 import br.edu.ifsp.scl.sdm.dummyproducts.adapter.ProductAdapter
 import br.edu.ifsp.scl.sdm.dummyproducts.databinding.ActivityMainBinding
 import br.edu.ifsp.scl.sdm.dummyproducts.model.Product
+import br.edu.ifsp.scl.sdm.dummyproducts.model.ProductList
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import java.io.IOException
@@ -47,7 +48,7 @@ class MainActivity : AppCompatActivity() {
                 if(productsConnection.responseCode == HTTP_OK){
                     InputStreamReader(productsConnection.inputStream).readText().let {
                         runOnUiThread {
-                            productAdapter.addAll(Gson().fromJson(it, productList::class.java).products)
+                            productAdapter.addAll(Gson().fromJson(it, ProductList::class.java).products)
                         }
                     }
                 } else {

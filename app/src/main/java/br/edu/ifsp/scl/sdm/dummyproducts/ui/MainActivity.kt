@@ -43,10 +43,6 @@ class MainActivity : AppCompatActivity() {
         ProductImageAdapter(this, productImageList)
     }
 
-    companion object{
-        const val PRODUCTS_ENDPOINT = "https://dummyjson.com/products/"
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(amb.root)
@@ -86,39 +82,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun retrieveProducts() =
-        StringRequest(
-            Request.Method.GET,
-            PRODUCTS_ENDPOINT,
-            { response ->
-                Gson().fromJson(response, ProductList::class.java).products.also {
-                    productAdapter.addAll(it)
-                }
-            }, {
-                Toast.makeText(this, getString(R.string.request_problem), Toast.LENGTH_SHORT).show()
-            }
-        ).also {
-                DummyJSONAPI.getInstance(this).addToRequestQueue(it)
+        DummyJSONAPI.ProductListRequest({productList ->
+        productList.products.also {
+            productAdapter.addAll(it)
         }
-
-//    private fun retrieveProducts() = Thread {
-//            val productsConnection = URL(PRODUCTS_ENDPOINT).openConnection() as HttpURLConnection
-//            try {
-//                if(productsConnection.responseCode == HTTP_OK){
-//                    InputStreamReader(productsConnection.inputStream).readText().let {
-//                        runOnUiThread {
-//                            productAdapter.addAll(Gson().fromJson(it, ProductList::class.java).products)
-//                        }
-//                    }
-//                } else {
-//                    runOnUiThread {  Toast.makeText(this, getString(R.string.request_problem), Toast.LENGTH_SHORT).show() }}
-//            } catch (ioe: IOException){
-//                runOnUiThread {  Toast.makeText(this, getString(R.string.connection_failed), Toast.LENGTH_SHORT).show()}
-//            } catch (jse: JsonSyntaxException){
-//                runOnUiThread { Toast.makeText(this, getString(R.string.response_problem), Toast.LENGTH_SHORT).show()}
-//            } finally {
-//                productsConnection.disconnect()
-//            }
-//        }.start()
+        }, {
+            Toast.makeText(this, getString(R.string.request_problem), Toast.LENGTH_SHORT).show()
+        }).also {
+            DummyJSONAPI.getInstance(this).addToRequestQueue(it)
+        }
     private fun retrieveProductImages(product: Product) =
         product.images.forEach { imageUrl ->
             ImageRequest(
@@ -137,25 +109,4 @@ class MainActivity : AppCompatActivity() {
                 DummyJSONAPI.getInstance(this).addToRequestQueue(it)
             }
         }
-//    private fun retrieveProductImages(product: Product) = Thread{
-//        product.images.forEach { imageUrl ->
-//            val imageConnection = URL(imageUrl).openConnection() as HttpURLConnection
-//            try {
-//                if(imageConnection.responseCode == HTTP_OK){
-//                    BufferedInputStream(imageConnection.inputStream).let{
-//                        val imageBitmap = BitmapFactory.decodeStream(it)
-//                        runOnUiThread {
-//                            productImageList.add(imageBitmap)
-//                            productImageAdapter.notifyItemInserted(productImageList.lastIndex)
-//                        }
-//                    }
-//                } else {
-//                    runOnUiThread {  Toast.makeText(this, getString(R.string.request_problem), Toast.LENGTH_SHORT).show() }}
-//            } catch (ioe: IOException){
-//                runOnUiThread {  Toast.makeText(this, getString(R.string.connection_failed), Toast.LENGTH_SHORT).show()}
-//            }finally {
-//                imageConnection.disconnect()
-//            }
-//        }
-//    }.start()
     }
